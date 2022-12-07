@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="myForm">
+        <form>
+            <div class="form-group">
+                <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="1@1.ru" v-model="email">
+            </div>
+            <div class="form-group">
+                <label for="FirstName">First Name</label>
+                <input type="text" class="form-control" id="FirstName" placeholder="Dmitry" v-model="firstName">
+            </div>
+            <div class="form-group">
+                <label for="LastName">Last Name</label>
+                <input type="text" class="form-control" id="LastName" placeholder="Lavrik" v-model="lastName">
+            </div>
+            <div class="form-group">
+                <label for="Phone">Phone</label>
+                <input type="text" class="form-control" id="Phone" placeholder="+79999999999" v-model="phone">
+            </div>
+            <div class="form-group">
+                <label for="Guests">Guests</label>
+                <button type="button" class="btn btn-primary" id="Guests" @click="addGuest">+</button>
+            </div>
+            <div class="form-group" v-for="(guest, index, array) in guests" v-on:dblclick="deleteGuest($event, index)" :key="index">
+                <label>Guest {{ index + 1 }}</label>
+<!--                @input="guest.name = $event.target.guests"-->
+                <input type="text" id="addGuest" class="form-control" :placeholder="'Some friend ' + (index + 1)" v-model="guest.name">
+            </div>
+            <button type="submit" class="btn btn-success">Send Data</button>
+        </form>
+    </div>
+</div>
+<script>
+    let myForm = new Vue({
+        el: '.myForm',
+        data: {
+            email: "",
+            firstName: "",
+            lastName: "",
+            phone: "",
+            guests: [{
+                name: ''
+            }]
+        },
+        methods: {
+            addGuest() {
+                this.guests.push({
+                    name: ''
+                });
+                showGuests();
+            },
+            deleteGuest(e, index) {
+                this.guests.splice(this.guests.indexOf(index), 1);
+            },
+        },
+        computed: {
+            addGuest(val) {
+                myForm.guests.push({name: `${val}`});
+            }
+        }
+    });
+</script>
+
+<script>
+    const showGuests = () => {
+        for (guest in myForm.guests) {
+            console.log(guest);
+        }
+    }
+</script>
+</body>
+</html>

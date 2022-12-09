@@ -32,9 +32,8 @@
                 <label for="Guests">Guests</label>
                 <button type="button" class="btn btn-primary" id="Guests" @click="addGuest">+</button>
             </div>
-            <div class="form-group" v-for="(guest, index, array) in guests" v-on:dblclick="deleteGuest($event, index)" :key="index">
+            <div class="form-group" v-for="(guest, index, array) in guests" v-on:dblclick="deleteGuest(guest.id)" :key="index">
                 <label>Guest {{ index + 1 }}</label>
-<!--                @input="guest.name = $event.target.guests"-->
                 <input type="text" id="addGuest" class="form-control" :placeholder="'Some friend ' + (index + 1)" v-model="guest.name">
             </div>
             <button type="submit" class="btn btn-success">Send Data</button>
@@ -49,35 +48,31 @@
             firstName: "",
             lastName: "",
             phone: "",
+            globalId: 0,
             guests: [{
+                id: 0,
                 name: ''
             }]
         },
         methods: {
             addGuest() {
+                this.globalId++;
+
                 this.guests.push({
-                    name: ''
+                    name: '',
+                    id: this.globalId
                 });
-                showGuests();
+
+                for (guest in this.guests) {
+                    console.log(guest);
+                }
             },
-            deleteGuest(e, index) {
-                this.guests.splice(this.guests.indexOf(index), 1);
+            deleteGuest(id) {
+                console.log(this.guests.find(guest => guest.id === id))
+                this.guests.splice(this.guests.map(guest => guest.id).indexOf(id), 1);
             },
         },
-        computed: {
-            addGuest(val) {
-                myForm.guests.push({name: `${val}`});
-            }
-        }
     });
-</script>
-
-<script>
-    const showGuests = () => {
-        for (guest in myForm.guests) {
-            console.log(guest);
-        }
-    }
 </script>
 </body>
 </html>

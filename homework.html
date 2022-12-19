@@ -11,7 +11,7 @@
 <body>
 <div class="wrapper">
     <div class="myForm">
-        <form>
+        <form class="form-to-enter" v-if="isFormVisible">
             <div class="form-group">
                 <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="1@1.ru" v-model="email">
@@ -36,8 +36,39 @@
                 <label>Guest {{ index + 1 }}</label>
                 <input type="text" id="addGuest" class="form-control" :placeholder="'Some friend ' + (index + 1)" v-model="guest.name">
             </div>
-            <button type="submit" class="btn btn-success">Send Data</button>
+<!--            <button type="submit" class="btn btn-success">Send Data</button>-->
+            <button class="btn btn-success" type="button" @click="changeVisibility">Send Data</button>
         </form>
+        <div class="table-to-show" v-else>
+            <h2>All done!</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Email</th>
+                    <th>{{ email }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Name</th>
+                    <td>{{ firstName }} {{ lastName }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Phone</th>
+                    <td>{{ phone }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Guests</th>
+                    <td>
+                        <ul>
+                            <li v-for="(guest, index, array) in guests" :key="index">{{ guest.name }}</li>
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 <script>
@@ -52,7 +83,8 @@
             guests: [{
                 id: 0,
                 name: ''
-            }]
+            }],
+            isFormVisible: true
         },
         methods: {
             addGuest() {
@@ -71,7 +103,10 @@
                 console.log(this.guests.find(guest => guest.id === id))
                 this.guests.splice(this.guests.map(guest => guest.id).indexOf(id), 1);
             },
-        },
+            changeVisibility() {
+                this.isFormVisible = !this.isFormVisible;
+            }
+        }
     });
 </script>
 </body>

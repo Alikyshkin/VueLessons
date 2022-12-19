@@ -4,72 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1</title>
-    <link rel="stylesheet" href="css//bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link href="css/styles.css" rel="stylesheet">
     <script src="js/vue.js"></script>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="sample">
-            <form>
-        		<div class="progress">
-					<div class="progress-bar"></div>
-				</div>
-				<div>
-					<div class="form-group">
-	                    <label>name</label>
-	                    <input type="text" class="form-control">
-	                </div>
-				</div>
-				<button class="btn btn-primary">
-					Send Data
-				</button>
-			</form>
-			<div>
-				<table class="table table-bordered">
-					<tr>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</div>
-		</div>
+<div class="wrapper">
+    <div class="sample">
+        <form v-if="isFormVisible">
+            <div class="progress">
+                <div :style="progressWidth"
+                     :aria-valuenow="done"
+                     aria-valuemin="0"
+                     :aria-valuemax="valueMax"
+                     class="progress-bar">{{ done }}
+                </div>
+                <!--					<b-progress :value="value" :max="max" class="mb-3"></b-progress>-->
+            </div>
+            <div>
+                <div v-for="(element, index, key) in info" :key="key" class="form-group">
+                    <div>
+						<label>{{ element.name }}</label>
+						<span class="fa"
+							  v-if="controls[index].activated"
+							  :class="controls[index].error ?
+					'fa-exclamation-circle text-danger' :
+					'fa-check-circle text-success'"></span>
+					</div>
+
+                    <input type="text" class="form-control"
+                           :value="element.value"
+                           @input="onInput($event.target.value, index)">
+                </div>
+            </div>
+            <button class="btn btn-primary" type="button" :disabled="done < info.length" @click="changeVisibility">
+                Send Data
+            </button>
+        </form>
+        <div v-else>
+            <table class="table table-bordered">
+                <tr v-for="(element, index, key) in info" :key="key">
+                    <td>{{ element.name }}</td>
+                    <td>{{ element.value }}</td>
+                </tr>
+            </table>
+        </div>
     </div>
-	<script>
-		
-		new Vue({
-			el: '.sample',
-			data: {
-				info: [
-					{
-						name: 'Name',
-						value: '',
-						pattern: /^[a-zA-Z ]{2,30}$/
-					},
-					{
-						name: 'Phone',
-						value: '',
-						pattern: /^[0-9]{7,14}$/
-					},
-					{
-						name: 'Email',
-						value: '',
-						pattern: /.+/
-					},
-					{
-						name: 'Some Field 1',
-						value: '',
-						pattern: /.+/
-					},
-					{
-						name: 'Some Field 2',
-						value: '',
-						pattern: /.+/
-					}
-				]
+</div>
+<script>
+
+    new Vue({
+        el: '.sample',
+        data: {
+            info: [
+                {
+                    name: 'Name',
+                    value: '',
+                    pattern: /^[a-zA-Z ]{2,30}$/
+                },
+                {
+                    name: 'Phone',
+                    value: '',
+                    pattern: /^[0-9]{7,14}$/
+                },
+                {
+                    name: 'Email',
+                    value: '',
+                    pattern: /.+/
+                },
+                {
+                    name: 'Some Field 1',
+                    value: '',
+                    pattern: /.+/
+                },
+                {
+                    name: 'Some Field 2',
+                    value: '',
+                    pattern: /.+/
+                }
+            ],
+			isFormVisible: true,
+            controls: []
+        },
+		beforeMount() {
+			for (let i = 0; i < this.info.length; i++) {
+				this.controls.push({
+					activated: false,
+					error: true
+				})
 			}
-		});
-	</script>
+		},
+        methods: {
+            onInput: function (value, index) {
+                let data = this.info[index];
+                let control = this.controls[index];
+
+                data.value = value;
+                control.error = !data.pattern.test(value);
+				control.activated = true;
+            },
+			changeVisibility() {
+				this.isFormVisible = !this.isFormVisible;
+			}
+        },
+		computed: {
+			done() {
+				let done = 0;
+
+				for (let i = 0; i < this.controls.length; i++) {
+					if(!this.controls[i].error) {
+						done++;
+					}
+				}
+
+				return done;
+			},
+			progressWidth() {
+				return {
+					width: (100 / this.info.length * this.done) + '%'
+				}
+			},
+			valueMax() {
+				return this.info.length
+			}
+		}
+    });
+</script>
 </body>
 </html>

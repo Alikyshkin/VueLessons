@@ -90,8 +90,8 @@
 		beforeMount() {
 			for (let i = 0; i < this.info.length; i++) {
 				this.controls.push({
-					activated: false,
-					error: true
+					error: !this.info[i].pattern.test(this.info[i].value),
+					activated: this.info[i].value != ''
 				})
 			}
 		},

@@ -6,7 +6,7 @@
 					<div class="progress-bar" :style="progressWidth"></div>
 				</div>
 				<div>
-					<app-input v-for="(item, index) in  info"
+					<app-input v-for="(item, index) in info"
 							   :name="item.name"
 							   :value="item.value"
 							   :pattern="item.pattern"
